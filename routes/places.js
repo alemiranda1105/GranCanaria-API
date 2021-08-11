@@ -43,7 +43,7 @@ async function readByTag(tags, res) {
     }
 }
 
-function sendResult(query, res) {
+function searchResult(query, res) {
     var rawRes = [];
     query.forEach((doc) => {
         let data = doc.data();
