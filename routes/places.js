@@ -8,7 +8,7 @@ const Places = require('../model/places');
 const db = admin.firestore();
 const ref = db.collection('sitios');
 
-// Get all places in the DB
+// Get places in the DB
 router.get('/', (req, res) => {
     let query = req.query.tag;
     if(typeof query !== 'undefined') {
@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
 async function readAll(res) {
     try {
         const query = await ref.get();
-        sendResult(query, res);
+        searchResult(query, res);
     } catch (error) {
         res.status(418).send( { message: `${error}` } );
     }
@@ -36,7 +36,7 @@ async function readByTag(tags, res) {
         if(query.empty) {
             throw "Nada encontrado";
         } else {
-            sendResult(query, res);
+            searchResult(query, res);
         }
     } catch (error) {
         res.status(418).send( { message: `${error}` } );
