@@ -8,34 +8,15 @@ const app = express();
 const PORT = 8080;
 app.use(express.json());
 
+// Initialize firebase
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
-const db = admin.firestore();
-const ref = db.collection('sitios');
+
+const placesRoute = require('./routes/places');
+app.use('/places', placesRoute);
 
 app.listen(
     PORT,
-    function() {
-        console.log("working");
-        read(["city"]);
-    }
+    () =>  console.log(`it's alive on localhost:${PORT}`)
 );
-
-
-async function read() {
-    const res = await ref.get();
-    res.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data());
-    })
-}
-
-async function read(tags) {
-    const query = await ref.get();
-    query.forEach((doc) => {
-        console.log(doc.data);
-        if(doc.tags.includes(tags)) {
-            console.log(doc.name, '=>', doc.url);
-        }
-    });
-}

@@ -3,3 +3,5 @@ const Places = {
     tags: [],
     url: String
 };
+
+module.exports = Places;
