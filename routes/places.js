@@ -9,37 +9,48 @@ const db = admin.firestore();
 const ref = db.collection('sitios');
 
 // Get all places in the DB
-router.get('/', async(req, res) => {
-    try {
-        const query = await ref.get();
-        var rawRes = [];
-        query.forEach((doc) => {
-            let data = doc.data();
-            rawRes = [ ...rawRes, data];
-        });
-        res.json(rawRes);
-        res.status(200).send();
-
-    } catch (error) {
-        res.status(418).send( { message: `${error}` } );
+router.get('/', (req, res) => {
+    let query = req.query.tag;
+    if(typeof query !== 'undefined') {
+        let tags = query.split(',');
+        readByTag(tags, res);
+        //res.status(201).send( { messsage: `tags => ${tags}` });
+    } else {
+        readAll(res);
+        //res.status(201).send( { messsage: `todos leidos` });
     }
 });
 
-/*async function read() {
-    const res = await ref.get();
-    res.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data());
-    })
+async function readAll(res) {
+    try {
+        const query = await ref.get();
+        sendResult(query, res);
+    } catch (error) {
+        res.status(418).send( { message: `${error}` } );
+    }
 }
 
-async function read(tags) {
-    const query = await ref.get();
-    query.forEach((doc) => {
-        console.log(doc.data);
-        if(doc.tags.includes(tags)) {
-            console.log(doc.name, '=>', doc.url);
+async function readByTag(tags, res) {
+    try {
+        const query = await ref.where('tags', 'array-contains-any', tags).get();
+        if(query.empty) {
+            throw "Nada encontrado";
+        } else {
+            sendResult(query, res);
         }
+    } catch (error) {
+        res.status(418).send( { message: `${error}` } );
+    }
+}
+
+function sendResult(query, res) {
+    var rawRes = [];
+    query.forEach((doc) => {
+        let data = doc.data();
+        rawRes = [...rawRes, data];
     });
-}*/
+    res.json(rawRes);
+    res.status(200).send();
+}
 
 module.exports = router;
