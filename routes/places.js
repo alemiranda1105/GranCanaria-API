@@ -21,12 +21,20 @@ router.get('/', (req, res) => {
     }
 });
 
+router.post('/add', (req, res) => {
+    const { name, url, tags } = req.body;
+    if(!name, !url, !tags) {
+        sendError("Error al añadir elementos");
+        return;
+    }
+});
+
 async function readAll(res) {
     try {
         const query = await ref.get();
         searchResult(query, res);
     } catch (error) {
-        res.status(418).send( { message: `${error}` } );
+        sendError(error);
     }
 }
 
@@ -39,7 +47,7 @@ async function readByTag(tags, res) {
             searchResult(query, res);
         }
     } catch (error) {
-        res.status(418).send( { message: `${error}` } );
+        sendError(error);
     }
 }
 
@@ -51,6 +59,10 @@ function searchResult(query, res) {
     });
     res.json(rawRes);
     res.status(200).send();
+}
+
+function sendError(error) {
+    res.status(418).send( { message: `${error}` } );
 }
 
 module.exports = router;
