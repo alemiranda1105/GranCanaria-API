@@ -65,8 +65,10 @@ async function readByTag(tags, res) {
 function sendResult(query, res) {
     var rawRes = [];
     query.forEach((doc) => {
-        let data = doc.data();
-        rawRes = [...rawRes, data];
+        let data = new Object();
+        data.name = doc.data().name;
+        data.data = doc.data();
+        rawRes.push(data);
     });
     res.json(rawRes);
     res.status(200).send();
