@@ -1,3 +1,4 @@
+const { raw } = require('express');
 const express = require('express');
 const admin = require('firebase-admin');
 
@@ -42,7 +43,7 @@ router.post('/add', async function(req, res) {
 async function readAll(res) {
     try {
         const query = await ref.get();
-        searchResult(query, res);
+        sendResult(query, res);
     } catch (error) {
         sendError(error, res);
     }
@@ -54,14 +55,14 @@ async function readByTag(tags, res) {
         if(query.empty) {
             throw "Nada encontrado";
         } else {
-            searchResult(query, res);
+            sendResult(query, res);
         }
     } catch (error) {
         sendError(error, res);
     }
 }
 
-function searchResult(query, res) {
+function sendResult(query, res) {
     var rawRes = [];
     query.forEach((doc) => {
         let data = doc.data();
