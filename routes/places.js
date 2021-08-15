@@ -10,14 +10,18 @@ const ref = db.collection('sitios');
 
 // Get places in the DB
 router.get('/', (req, res) => {
-    let query = req.query.tag;
-    if(typeof query !== 'undefined') {
-        let tags = query.split(',');
+    let query = req.query;
+    let tagQuery = query.tag;
+    let nameQuery = query.name;
+
+    if(typeof tagQuery !== 'undefined') {
+        let tags = tagQuery.split(',');
         readByTag(tags, res);
-        //res.status(201).send( { messsage: `tags => ${tags}` });
+    } else if(typeof nameQuery !== 'undefined') {
+        readByName(nameQuery, res);
+        // res.status(201).send( { messsage: `name => ${nameQuery}` });
     } else {
         readAll(res);
-        //res.status(201).send( { messsage: `todos leidos` });
     }
 });
 
@@ -59,6 +63,19 @@ async function readByTag(tags, res) {
         }
     } catch (error) {
         sendError(error, res);
+    }
+}
+
+async function readByName(name, res) {
+    try {
+        const query = await ref.where('name', "==", name).get();
+        if(query.empty) {
+            throw "Nada encontrando";
+        } else {
+            sendResult(query, res);
+        }
+    } catch (error) {
+        sendError(error, res);        
     }
 }
 
