@@ -3,13 +3,15 @@ const express = require('express');
 const admin = require('firebase-admin');
 
 const router = express.Router();
+const cors = require('cors');
+
 
 //Initialize DB
 const db = admin.firestore();
 const ref = db.collection('sitios');
 
 // Get places in the DB
-router.get('/', (req, res) => {
+router.get('/', cors(),(req, res) => {
     let query = req.query;
     let tagQuery = query.tag;
     let nameQuery = query.name;
