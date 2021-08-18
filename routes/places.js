@@ -85,7 +85,7 @@ function sendResult(query, res) {
     var rawRes = [];
     query.forEach((doc) => {
         let data = new Object();
-        data.name = doc.data().name;
+        data.id = doc.id;
         data.data = doc.data();
         rawRes.push(data);
     });
